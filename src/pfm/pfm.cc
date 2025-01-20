@@ -3,6 +3,8 @@
 #include <iostream>
 #include <cmath>
 
+//#define PAGE_SIZE 8192 //4096
+
 namespace PeterDB {
     PagedFileManager &PagedFileManager::instance() {
         static PagedFileManager _pf_manager = PagedFileManager();
@@ -203,7 +205,7 @@ namespace PeterDB {
             fwrite((char*)&fileHandle.masterAttributeCount, sizeof(char), 1, info);
             fwrite((char*)&fileHandle.attributePageCounter, sizeof(char), 1, info);
 
-            for(int i = 0; i < 4078; i++) //1023 = 4096
+            for(int i = 0; i < 4096-18; i++) //1023 = 4096
                 fwrite((char*)&fileHandle.totalPages, sizeof(char), 1, info);
 
             fclose(info);
