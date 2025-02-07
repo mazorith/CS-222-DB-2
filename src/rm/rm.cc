@@ -1,3 +1,4 @@
+
 #include "src/include/rm.h"
 
 #include <cmath>
@@ -371,13 +372,12 @@ namespace PeterDB {
         bool found_table = false;
         while(stop_condition != RM_EOF && !found_table)
         {
-            test_string = "";
             stop_condition = iterator.getNextTuple(rid, tuple);
-            if(stop_condition != RM_EOF)
-            {
-                memcpy(&ibuffer, (char*)tuple+name_offset, sizeof(int));
-                test_string.resize(ibuffer);
-                memcpy((char*)test_string.data(), (char*)tuple+name_offset+sizeof(int), ibuffer);
+            if (stop_condition != RM_EOF) {
+
+                //need to use assign instead of resize as resize apperently will overwrite data at the start address of a string
+                memcpy(&ibuffer, (char*)tuple + name_offset, sizeof(int));
+                test_string.assign((char*)tuple + name_offset + sizeof(int), ibuffer);
 
                 if(test_string == tableName)
                 {
