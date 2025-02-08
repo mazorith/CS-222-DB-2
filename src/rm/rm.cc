@@ -249,6 +249,11 @@ namespace PeterDB {
         if(rbfm->createFile(tableName) == -1)
             return -1;
 
+        RID rid;
+        void* tuple;
+        tuple = malloc(200);
+        int offset = 0;
+
         FileHandle fileHandle;
 
         //create entry in tables table
@@ -259,11 +264,6 @@ namespace PeterDB {
 
         int table_id = tablecount+1;
         int name_length = tableName.length();
-
-        RID rid;
-        void* tuple;
-        tuple = malloc(200);
-        int offset = 0;
 
         memcpy((char*)tuple, &indicator, sizeof(unsigned));
         offset += 1;//sizeof(unsigned);
@@ -277,6 +277,8 @@ namespace PeterDB {
         offset += sizeof(int);
         memcpy((char*)tuple+offset, tableName.c_str(), name_length);
         offset += name_length;
+
+//        fileHandle.file = "Table"
 
         if(rbfm->insertRecord(fileHandle, table_attrs, tuple, rid) == -1)
             return -1;
@@ -649,7 +651,7 @@ namespace PeterDB {
             {
                 if(fileHandle->appendPageCounter-1 >= rid.pageNum)
                 {
-                    free(pageData);
+//                    free(pageData);
                     return RM_EOF;
                 }
 
