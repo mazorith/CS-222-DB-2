@@ -2,12 +2,13 @@
 
 ### 1. Basic information
  - Team #:
- - Github Repo Link: https://github.com/mazorith/CS-222-DB-2
- - Student 1 UCI NetID: iharshba
+ - Github Repo Link: https://github.com/mazorith/CS222-DB.git
+ - Student 1 UCI NetID: 85845302
  - Student 1 Name: Ian Harshbarger
 
-I have taken this class before partially. But due to a death in family I need to drop the course. I used my code and skills from taking the class previously to do this assignment. 
-As I already had this completed I am reusing most of this Debugger/Valgrid Report as it is still applicable. I just wanted to state this here to prevent any self plagiarism .
+I have taken this class before partially. I was unable to complete all the work and need to retake this course.
+I am using my work from last year for the using a debugger section as it is still applicable to what I am and have 
+used it for.  
 
 
 ### 2. Using a Debugger
@@ -42,10 +43,11 @@ in this case I ran into the error previously so once I uncomment the char buffer
 - Describe how you use Valgrind to detect memory leaks and other problems in your code and show screenshot of the Valgrind report.
 
 I find valgrind more useful for when most of an implementation is completed and needs to more advanced debugging. 
-Was able to run it to identify a few memory leaks I had.
+Since a few parts of my code are unfinished and I am trying to track down specific errors with the debug tool. 
+I have not yet needed to fully utilize valgrind, but I can run it and identify a few memory leaks I currently have.
 
 ![](captures/valgrind0.PNG)
 
-The memory leeks were due to the fact that my project is was failing in any test where I need to use the print 
-functionality of my rbmf. The memory allocation of the null buffer initalization is constantly causing a 
-segmentation fault. 
+The current memory leeks are due to the fact that my project is currently failing in any test where I need to use the print 
+functionality of my rbmf. For some reason the memory allocation of the null buffer initalization is constantly causing a 
+segmentation fault. I don't know why since this bit of code is running perfectly in both the insert and read functions 
