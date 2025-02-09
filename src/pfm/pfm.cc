@@ -66,49 +66,6 @@ namespace PeterDB {
 
                 fread((char*)&value, sizeof(unsigned), 1, info);
                 fileHandle.readPageCounter = value;
-
-//                fread((char*)&v2, sizeof(char), 1, info);
-//                fileHandle.masterAttributeCount = v2;
-//
-//                fread((char*)&value, sizeof(char), 1, info);
-//                fileHandle.attributePageCounter = v2;
-
-                //if file contains attribute tables (if master count > 0 then saved page count > 0)
-//                if(fileHandle.masterAttributeCount > 0)
-//                {
-//                    fseek(info, -4096*fileHandle.attributePageCounter, SEEK_END);
-//                    unsigned num_attr = 0;
-//                    for(int i = 0; i < fileHandle.masterAttributeCount; i++)
-//                    {
-//                        fread(&value, sizeof(char), 1, info);
-//                        num_attr = value;
-//
-//                        //vectors to save locally for reference
-//                        std::vector<unsigned> attr_vec;
-//                        std::vector<std::string> name_vec;
-//
-//                        //load attribute information
-//                        attr_vec.push_back(num_attr);
-//                        for(int j = 0; j < num_attr; j++)
-//                        {
-//                            fread(&value, sizeof(char), 1, info);
-//                            attr_vec.push_back(value);
-//                        }
-//                        fileHandle.attributes.push_back(attr_vec);
-//
-//                        //load attribute names
-//                        unsigned length = 0;
-//                        std::string att_name = "";
-//                        for(int j = 0; j < num_attr; j++)
-//                        {
-//                            fread(&length, sizeof(char), 1, info);
-//                            fread(&att_name, length, 1, info);
-//                            name_vec.push_back(att_name);
-//                        }
-//                        fileHandle.attribute_names.push_back(name_vec);
-//                    }
-//                }
-
                 fileHandle.has_saved_values = true;
             }
 
@@ -125,35 +82,6 @@ namespace PeterDB {
         {
             FILE * info = std::fopen(fileHandle.file, "r+");
 
-//            if(fileHandle.masterAttributeCount > 0)
-//            {
-//                fseek(info, -4096*fileHandle.attributePageCounter, SEEK_END);
-//
-//                int bytes_written = 0;
-//                for(int i = 0; i < fileHandle.masterAttributeCount; i++)
-//                {
-//                    for (int j = 0; j < fileHandle.attributes[i].size(); j++)
-//                    {
-//                        fwrite(&fileHandle.attributes[i][j], sizeof(char), 1, info);
-//                        bytes_written++;
-//                    }
-//                    int size_holder = 0;
-//                    for (int j = 0; j < fileHandle.attribute_names[i].size(); j++)
-//                    {
-//                        size_holder = unsigned(fileHandle.attribute_names[i][j].size());
-//                        fwrite(&size_holder, sizeof(char), 1, info);
-//                        bytes_written++;
-//
-//                        fwrite(&fileHandle.attribute_names[i][j], size_holder, 1, info);
-//                        bytes_written += size_holder;
-//                    }
-//                }
-//
-//                fileHandle.attributePageCounter = ceil(double(bytes_written)/4096.0);
-//                for(int i = 0; i < (4096*fileHandle.attributePageCounter)-bytes_written; i++)
-//                    fwrite(&fileHandle.totalPages, sizeof(char), 1, info);
-//            }
-
             fseek(info, -4096, SEEK_END);
 
             fwrite((char*)&fileHandle.totalPages, sizeof(unsigned), 1, info);
@@ -169,33 +97,6 @@ namespace PeterDB {
         else
         {
             FILE * info = std::fopen(fileHandle.file, "a");
-
-//            if(fileHandle.masterAttributeCount > 0)
-//            {
-//                int bytes_written = 0;
-//                for(int i = 0; i < fileHandle.masterAttributeCount; i++)
-//                {
-//                    for (int j = 0; j < fileHandle.attributes[i].size(); j++)
-//                    {
-//                        fwrite(&fileHandle.attributes[i][j], sizeof(char), 1, info);
-//                        bytes_written++;
-//                    }
-//                    int size_holder = 0;
-//                    for (int j = 0; j < fileHandle.attribute_names[i].size(); j++)
-//                    {
-//                        size_holder = unsigned(fileHandle.attribute_names[i][j].size());
-//                        fwrite(&size_holder, sizeof(char), 1, info);
-//                        bytes_written++;
-//
-//                        fwrite(&fileHandle.attribute_names[i][j], size_holder, 1, info);
-//                        bytes_written += size_holder;
-//                    }
-//                }
-//
-//                fileHandle.attributePageCounter = ceil(double(bytes_written)/4096.0);
-//                for(int i = 0; i < (4096*fileHandle.attributePageCounter)-bytes_written; i++)
-//                    fwrite(&fileHandle.totalPages, sizeof(char), 1, info);
-//            }
 
             fwrite((char*)&fileHandle.totalPages, sizeof(unsigned), 1, info);
             fwrite((char*)&fileHandle.appendPageCounter, sizeof(unsigned), 1, info);

@@ -728,6 +728,8 @@ namespace PeterDB {
         rid.pageNum = 0;
         rid.slotNum = 4084;
 
+        rbfm_ScanIterator.rids = std::vector<RID>();
+
         //get first page
         if(fileHandle.readPage(rid.pageNum, pageData) == -1)
             return -1;
@@ -753,7 +755,12 @@ namespace PeterDB {
         const char* str_holder;
         //void* str_holder_data = malloc(500);
         const char* str_holder_data = (char*)malloc(500);
-        const char* compStr = (char*)malloc(500);//std::string compStr;
+//        const char* compStr = (char*)malloc(500);//std::string compStr;
+
+//        const char* compStr = static_cast<const char*>(value);
+//        std::string str(compStr);
+
+        std::string compStr = "";
 
         int dataType = 0; //int 0, float 1, string 2
         if (conditionAttribute != "")
@@ -768,10 +775,20 @@ namespace PeterDB {
                         dataType = 2;
 
                         memcpy(&compInt, (char*) value, sizeof(unsigned));
-                        memcpy((char*)compStr, (char*) value + sizeof(unsigned), compInt);//(char*)str_holder_data, (char*) value + sizeof(unsigned), compInt);
-                        //compStr = reinterpret_cast<const char*>(str_holder_data);
-                        //compStr = static_cast<const char*>(value);
-//                        compInt = *reinterpret_cast<const int*>(value);
+
+                        // for string extraction
+                        // Step 1: Extract the length prefix
+                        unsigned msgLength;
+                        memcpy(&msgLength, value, sizeof(unsigned));
+
+                        // Step 2: Validate the length
+                        if (msgLength != 0) {
+                            // Step 3: Extract the string data
+                            const char *strData = static_cast<const char *>(value) + sizeof(unsigned);
+
+                            // Step 4: Construct and return the string
+                            compStr = std::string(strData, msgLength);
+                        }
                     } else if (recordDescriptor[i].type == AttrType::TypeReal)
                     {
                         dataType = 1;
@@ -904,29 +921,31 @@ namespace PeterDB {
                                     }
                                     break;
                                 case 2:
-                                    memcpy(&int_holder, (char*) data+1, sizeof(int));
-                                    memcpy((char*)str_holder_data, (char*) data+5, int_holder);
+                                    memcpy(&int_holder, (char*)data + 1, sizeof(int));
+
+// Copy the string data and convert it to a std::string
+                                    std::string str_holder_data(static_cast<char*>(data) + 5, int_holder);
 //                                    str_holder = reinterpret_cast<const char*>(str_holder_data);
                                     switch(compOp)
                                     {
 
                                         case 0:
-                                            accept_data = (*str_holder_data == *compStr);
+                                            accept_data = (str_holder_data == compStr);
                                             break;
                                         case 1:
-                                            accept_data = (*str_holder_data < *compStr);
+                                            accept_data = (str_holder_data < compStr);
                                             break;
                                         case 2:
-                                            accept_data = (*str_holder_data <= *compStr);
+                                            accept_data = (str_holder_data <= compStr);
                                             break;
                                         case 3:
-                                            accept_data = (*str_holder_data > *compStr);
+                                            accept_data = (str_holder_data > compStr);
                                             break;
                                         case 4:
-                                            accept_data = (*str_holder_data >= *compStr);
+                                            accept_data = (str_holder_data >= compStr);
                                             break;
                                         case 5:
-                                            accept_data = (*str_holder_data != *compStr);
+                                            accept_data = (str_holder_data != compStr);
                                             break;
                                         case 6:
                                             accept_data = true;

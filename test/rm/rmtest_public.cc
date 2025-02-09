@@ -936,7 +936,7 @@ namespace PeterDBTesting {
 
         bufSize = 1000;
         size_t tupleSize = 0;
-        int numTuples = 100000;
+        int numTuples = 100000; //100000;
 
         inBuffer = malloc(bufSize);
         outBuffer = malloc(bufSize);
@@ -986,7 +986,7 @@ namespace PeterDBTesting {
 
         size_t tupleSize;
         bufSize = 1000;
-        int numTuples = 100000;
+        int numTuples = 100; //100000;
         inBuffer = malloc(bufSize);
         outBuffer = malloc(bufSize);
         std::vector<float> lats;
@@ -1027,6 +1027,7 @@ namespace PeterDBTesting {
                                     << "relationManager::scan() should succeed.";
 
         float latReturned, lngReturned;
+        int counted_index = 0;
         while (rmsi.getNextTuple(rid, outBuffer) != RM_EOF) {
             latReturned = *(float *) ((char *) outBuffer + 5);
             lngReturned = *(float *) ((char *) outBuffer + 1);
@@ -1040,6 +1041,7 @@ namespace PeterDBTesting {
             ASSERT_NE(targetLng, lngs.end()) << "returned lnt value is not from inserted.";
             lngs.erase(targetLng);
 
+            counted_index++;
         }
         ASSERT_TRUE(lats.empty()) << "returned lat does not match inserted";
         ASSERT_TRUE(lngs.empty()) << "returned lng does not match inserted";

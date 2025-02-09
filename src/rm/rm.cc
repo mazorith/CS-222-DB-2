@@ -2,6 +2,7 @@
 #include "src/include/rm.h"
 
 #include <cmath>
+#include <iostream>
 namespace PeterDB {
     RelationManager &RelationManager::instance() {
         static RelationManager _relation_manager = RelationManager();
@@ -370,6 +371,7 @@ namespace PeterDB {
             return -1;
 
         iterator.fileHandle = &fileHandle;
+//        fileHandle.file = "Tables";
 
         bool found_table = false;
         while(stop_condition != RM_EOF && !found_table)
@@ -389,6 +391,7 @@ namespace PeterDB {
             }
         }
 
+        fileHandle.file = "Tables";
         if(rbfm->closeFile(fileHandle) == -1)
             return -1;
 
@@ -402,8 +405,7 @@ namespace PeterDB {
         if(rbfm->openFile("Columns",fileHandle) == -1)
             return -1;
 
-        std::string column_str = "Columns";
-        fileHandle.file = column_str.c_str();
+        fileHandle.file = "Columns";
         iterator.fileHandle = &fileHandle;
         iterator.pageData_collected = false;
 
@@ -441,25 +443,13 @@ namespace PeterDB {
             }
         }
 
+        fileHandle.file = "Columns";
         if(rbfm->closeFile(fileHandle) == -1)
             return -1;
 
         free(tuple);
         return 0;
 
-//        Attribute attr;
-//        //for now we will just grab the first set of attributes
-//        int first_vector_offset = 1;
-//        for(int i = 0; i < fileHandle.attribute_names[0].size(); i++)
-//        {
-//            attr.name = fileHandle.attribute_names[0][i];
-//            attr.type = AttrType(fileHandle.attributes[0][i+first_vector_offset]);
-//            first_vector_offset++;
-//            attr.length = fileHandle.attributes[0][i+first_vector_offset];
-//            first_vector_offset++;
-//
-//            attrs.push_back(attr);
-//        }
     }
 
     RC RelationManager::insertTuple(const std::string &tableName, const void *data, RID &rid) {
@@ -585,7 +575,6 @@ namespace PeterDB {
         rm_ScanIterator.rids = rbfm_ScanIterator.rids;
         rbfm_ScanIterator.rids = std::vector<RID>();
 
-
         return rbfm->closeFile(fileHandle);
     }
 
@@ -620,23 +609,6 @@ namespace PeterDB {
 
             if(opened)
                 rbfm->closeFile(fileh);
-//            if(reset_values)
-//            {
-//                rbfm_ScanIterator->index = 0;
-//                rbfm_ScanIterator->current_page = 0;
-//            }
-//
-//            int return_val = rbfm_ScanIterator->getNextRecord(rid, data);
-//            if (return_val == RBFM_EOF)
-//            {
-////                rbfm->closeFile(*fileHandle);
-////                file_is_open = false;
-////                free(pageData);
-//                return RM_EOF;
-//            }
-//            else
-//                return 0;
-
         }
         else
         {
@@ -679,6 +651,12 @@ namespace PeterDB {
 
     RC RM_ScanIterator::close()
     {
+        index = 0;
+        current_page = -1;
+        scan_function = false;
+        file_is_open = false;
+        end_of_page = 0;
+        pageData_collected = false;
         return 0;
     }
 
